@@ -9,5 +9,5 @@ export const PROGRAM_ID = new PublicKey(
 // The mint address of the token you want to use for staking.
 // 🚨 IMPORTANT: Replace this with the actual mint address from your localnet setup.
 export const MINT_ADDRESS = new PublicKey(
-  "BiqgWBwqk7zgPNL8bmoSi9T7xQnCq7GpzE4xS7qm225S" // e.g. "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDUckr"
+  "99Y6T91yfEUmbyXJunB8giqR9idFydBCxASPRekLFJVF" // e.g. "4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDUckr"
 );
