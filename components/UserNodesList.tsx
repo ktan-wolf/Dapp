@@ -24,38 +24,41 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
 
   // ---- Fetch User's NodeDevices ----
   const fetchUserNodes = useCallback(async () => {
-    if (!program || !publicKey) return;
+    if (!publicKey) return;
 
     try {
-      const accounts = await connection.getProgramAccounts(PROGRAM_ID, {
-        filters: [
-          {
-            memcmp: {
-              offset: 8,
-              bytes: publicKey.toBase58(),
-            },
-          },
-        ],
-      });
+      const response = await fetch('http://localhost:3000/nodes');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const allNodes = await response.json();
 
-      if (accounts.length === 0) {
+      if (!allNodes || allNodes.length === 0) {
         setUserNodes([]);
         return;
       }
+      
+      const userPublicKeyStr = publicKey.toBase58();
 
-      const nodes = await Promise.all(
-        accounts.map(async (acc) => {
-          const data = await (program.account as any).nodeDevice.fetch(acc.pubkey);
-          return { pubkey: acc.pubkey, data };
-        })
-      );
+      // V-- MODIFIED --V: Adjusted to match the flat API response structure
+      const filteredNodes = allNodes
+        // 1. Filter using the top-level 'authority' property
+        .filter((node: any) => node.authority === userPublicKeyStr)
+        // 2. Map the flat structure to the nested structure the UI expects
+        .map((node: any) => ({
+          pubkey: new PublicKey(node.pubkey),
+          data: {
+            uri: node.uri // The UI needs a 'data' object with 'uri' inside
+          }
+        }));
 
-      setUserNodes(nodes);
+      setUserNodes(filteredNodes);
+
     } catch (err) {
-      console.error("Failed to fetch user NodeDevices:", err);
+      console.error("Failed to fetch user NodeDevices from API:", err);
       setUserNodes([]);
     }
-  }, [program, connection, publicKey]);
+  }, [publicKey]);
 
   // ---- Deregister a Node ----
   const deregisterNode = async (nodePubkey: PublicKey) => {
