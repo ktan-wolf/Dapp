@@ -16,7 +16,6 @@ interface UserNodesListProps {
 
 export default function UserNodesList({ onChange }: UserNodesListProps) {
   const { publicKey } = useWallet();
-  const { connection } = useConnection();
   const program = useAethernet();
 
   const [userNodes, setUserNodes] = useState<any[]>([]);

@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useConnection , useAnchorWallet } from "@solana/wallet-adapter-react";
-import { AnchorProvider ,  Program , Idl } from "@coral-xyz/anchor";
+import { AnchorProvider ,  Program } from "@coral-xyz/anchor";
 
 import idl from "@/lib/idl/aethernet.json";
 // import { PROGRAM_ID  } from "@/lib/constants";

@@ -16,7 +16,7 @@ import {
 } from "@solana/spl-token";
 
 import { useAethernet } from "@/app/hooks/useAethernet";
-import { PROGRAM_ID, MINT_ADDRESS } from "@/lib/constants";
+import { MINT_ADDRESS } from "@/lib/constants";
 
 // Define the props for the component
 interface RegisterNodeFormProps {
