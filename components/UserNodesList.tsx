@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import { useAethernet } from "@/app/hooks/useAethernet";
 import { PROGRAM_ID, MINT_ADDRESS } from "@/lib/constants";
 import {
