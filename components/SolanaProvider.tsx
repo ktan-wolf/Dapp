@@ -8,13 +8,17 @@ import { clusterApiUrl } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 
 export default function SolanaProvider({ children }: { children: ReactNode }) {
-  // const network = WalletAdapterNetwork.Devnet;
-  const endpoint = useMemo(() => 'http://127.0.0.1:8899', []);
+  // Use Devnet
+  const network = WalletAdapterNetwork.Devnet;
+
+  // Set endpoint to Solana Devnet
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  // Wallets you want to support
   const wallets = useMemo(
     () => [new PhantomWalletAdapter(), new SolflareWalletAdapter()],
     []
   );
-
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
