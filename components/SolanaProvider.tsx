@@ -13,6 +13,7 @@ export default function SolanaProvider({ children }: { children: ReactNode }) {
 
   // Set endpoint to Solana Devnet
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  // const endpoint = useMemo(() => "http://127.0.0.1:8899" , []);
 
   // Wallets you want to support
   const wallets = useMemo(

@@ -105,6 +105,7 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
 
       await fetchUserNodes();
       onChange?.(); // refresh stats in parent
+      toast.success("Node deregistered successfully!");
     } catch (err) {
       console.error("Failed to deregister node:", err);
     } finally {
