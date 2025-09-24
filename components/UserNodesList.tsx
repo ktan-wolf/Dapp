@@ -119,13 +119,18 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
     try {
       setLoading(true);
 
-      await program.methods
+      const txSig = await program.methods
         .updateUri(newUri)
         .accounts({
           authority: publicKey,
           nodes: nodePubkey,
         })
         .rpc();
+
+      console.log("✅ URI update tx:", txSig);
+
+      // Confirm transaction before refreshing UI
+      await program.provider.connection.confirmTransaction(txSig, "confirmed");
 
       setEditingNode(null);
       setNewUri("");
@@ -134,10 +139,12 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
       toast.success("Node URI updated successfully!");
     } catch (err) {
       console.error("Failed to update URI:", err);
+      toast.error("Failed to update URI");
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchUserNodes();
