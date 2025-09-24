@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useAethernet } from "@/app/hooks/useAethernet";
+import toast from "react-hot-toast";
 import { PROGRAM_ID, MINT_ADDRESS } from "@/lib/constants";
 import {
   getAssociatedTokenAddress,
@@ -17,6 +18,8 @@ interface UserNodesListProps {
 export default function UserNodesList({ onChange }: UserNodesListProps) {
   const { publicKey } = useWallet();
   const program = useAethernet();
+  const [editingNode, setEditingNode] = useState<string | null>(null);
+  const [newUri, setNewUri] = useState("");
 
   const [userNodes, setUserNodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -26,7 +29,7 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
     if (!publicKey) return;
 
     try {
-      const response = await fetch('https://indexer-o06a.onrender.com/nodes');
+      const response = await fetch('http://127.0.0.1:8081/nodes');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -109,6 +112,32 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
     }
   };
 
+  // ---- New: Update URI ----
+  const handleUpdateUri = async (nodePubkey: PublicKey) => {
+    if (!program || !publicKey) return;
+    try {
+      setLoading(true);
+
+      await program.methods
+        .updateUri(newUri)
+        .accounts({
+          authority: publicKey,
+          nodes: nodePubkey,
+        })
+        .rpc();
+
+      setEditingNode(null);
+      setNewUri("");
+      await fetchUserNodes();
+      onChange?.();
+      toast.success("Node URI updated successfully!");
+    } catch (err) {
+      console.error("Failed to update URI:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchUserNodes();
   }, [fetchUserNodes]);
@@ -124,19 +153,60 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
               className="p-3 border rounded-md bg-gray-800"
             >
               <p>
-                <strong>Node {i + 1} Pubkey:</strong>{" "}
-                {node.pubkey.toBase58()}
+                <strong>Node {i + 1} Pubkey:</strong> {node.pubkey.toBase58()}
               </p>
               <p>
                 <strong>URI:</strong> {node.data.uri}
               </p>
-              <button
-                disabled={loading}
-                onClick={() => deregisterNode(node.pubkey)}
-                className="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-              >
-                {loading ? "Processing..." : "Deregister"}
-              </button>
+
+              <div className="mt-2 space-x-2">
+                {/* Deregister */}
+                <button
+                  disabled={loading}
+                  onClick={() => deregisterNode(node.pubkey)}
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                >
+                  {loading ? "Processing..." : "Deregister"}
+                </button>
+
+                {/* Update URI */}
+                <button
+                  disabled={loading}
+                  onClick={() => {
+                    setEditingNode(node.pubkey.toBase58());
+                    setNewUri(node.data.uri);
+                  }}
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                >
+                  Update URI
+                </button>
+              </div>
+
+              {/* Conditional Input for updating URI */}
+              {editingNode === node.pubkey.toBase58() && (
+                <div className="mt-2 flex space-x-2">
+                  <input
+                    type="text"
+                    value={newUri}
+                    onChange={(e) => setNewUri(e.target.value)}
+                    className="px-2 py-1 rounded text-black flex-1"
+                  />
+                  <button
+                    disabled={loading}
+                    onClick={() => handleUpdateUri(node.pubkey)}
+                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                  >
+                    {loading ? "Processing..." : "Confirm Update"}
+                  </button>
+                  <button
+                    disabled={loading}
+                    onClick={() => setEditingNode(null)}
+                    className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </li>
           ))}
         </ul>

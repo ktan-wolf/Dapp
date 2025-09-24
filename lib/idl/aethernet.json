@@ -426,6 +426,39 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "update_uri",
+      "discriminator": [
+        252,
+        242,
+        81,
+        193,
+        48,
+        43,
+        1,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "nodes"
+          ]
+        },
+        {
+          "name": "nodes",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_uri",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
