@@ -8,6 +8,7 @@ import { PROGRAM_ID } from "@/lib/constants";
 import { useWallet } from "@solana/wallet-adapter-react";
 import RegisterNodeForm from "@/components/RegisterNodeForm";
 import UserNodesList from "@/components/UserNodesList";
+import { useRouter } from "next/navigation";
 
 const WalletMultiButtonDynamic = dynamic(
   async () =>
@@ -19,6 +20,7 @@ export default function Wallet() {
   const { connected } = useWallet();
   const program = useAethernet();
   const [networkStats, setNetworkStats] = useState<any>(null);
+  const router = useRouter();
 
   // ---- Fetch Network Stats ----
   const fetchNetworkStats = useCallback(async () => {
@@ -44,9 +46,9 @@ export default function Wallet() {
     <div className="font-sans min-h-screen w-full p-6 md:p-12">
       {/* Header: AETHERNET Logo and Wallet Button */}
       <header className="flex items-center justify-between w-full max-w-7xl mx-auto">
-        <div className="text-xl md:text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-400 to-pink-500 bg-clip-text text-transparent">
+        <button onClick={() => router.push("/")} className="text-xl hover:cursor-pointer md:text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-400 to-pink-500 bg-clip-text text-transparent">
           AETHERNET
-        </div>
+        </button>
         <WalletMultiButtonDynamic />
       </header>
 
