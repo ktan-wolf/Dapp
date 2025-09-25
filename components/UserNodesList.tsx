@@ -151,76 +151,93 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
   }, [fetchUserNodes]);
 
   return (
-    <div className="w-full max-w-2xl my-10 space-y-4">
-      <h3 className="font-bold text-lg">Your Registered Nodes</h3>
-      {userNodes.length > 0 ? (
-        <ul className="space-y-2">
-          {userNodes.map((node, i) => (
-            <li
-              key={node.pubkey.toBase58()}
-              className="p-3 border rounded-md bg-gray-800"
-            >
-              <p>
-                <strong>Node {i + 1} Pubkey:</strong> {node.pubkey.toBase58()}
-              </p>
-              <p>
-                <strong>URI:</strong> {node.data.uri}
-              </p>
+    // Use a relative parent to contain the glow and the card
+    <div className="relative w-full max-w-2xl font-['Rajdhani',_sans-serif]">
+        
+        {/* Glow effect layer */}
+        <div className="absolute -inset-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl opacity-50 blur-3xl"></div>
 
-              <div className="mt-2 space-x-2">
-                {/* Deregister */}
-                <button
-                  disabled={loading}
-                  onClick={() => deregisterNode(node.pubkey)}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-                >
-                  {loading ? "Processing..." : "Deregister"}
-                </button>
+        {/* Main content card with fixed height and internal flex layout */}
+        <div className="relative w-full p-8 space-y-6 bg-black/60 backdrop-blur-sm border border-pink-500/30 rounded-2xl flex flex-col max-h-[85vh]">
 
-                {/* Update URI */}
-                <button
-                  disabled={loading}
-                  onClick={() => {
-                    setEditingNode(node.pubkey.toBase58());
-                    setNewUri(node.data.uri);
-                  }}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                >
-                  Update URI
-                </button>
-              </div>
+            <h3 className="text-3xl font-bold text-center text-gray-100 tracking-wide flex-shrink-0">Your Registered Nodes</h3>
 
-              {/* Conditional Input for updating URI */}
-              {editingNode === node.pubkey.toBase58() && (
-                <div className="mt-2 flex space-x-2">
-                  <input
-                    type="text"
-                    value={newUri}
-                    onChange={(e) => setNewUri(e.target.value)}
-                    className="px-2 py-1 rounded text-black flex-1"
-                  />
-                  <button
-                    disabled={loading}
-                    onClick={() => handleUpdateUri(node.pubkey)}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
-                  >
-                    {loading ? "Processing..." : "Confirm Update"}
-                  </button>
-                  <button
-                    disabled={loading}
-                    onClick={() => setEditingNode(null)}
-                    className="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No nodes registered yet.</p>
-      )}
+            {userNodes.length > 0 ? (
+                // This list is now the scrollable area
+                <ul className="space-y-4 overflow-y-auto flex-grow pr-3 scrollbar-thin scrollbar-thumb-pink-700 scrollbar-track-black/30 hide-scrollbar ">
+                    {userNodes.map((node, i) => (
+                        <li
+                            key={node.pubkey.toBase58()}
+                            className="p-4 bg-gray-900/50 border border-gray-500/30 rounded-lg space-y-3 transition-all duration-300 hover:border-pink-500/50"
+                        >
+                            {/* Node Info */}
+                            <div className="break-words">
+                                <p className="text-gray-400">
+                                    <strong className="text-gray-200">Node {i + 1} Pubkey:</strong> {node.pubkey.toBase58()}
+                                </p>
+                                <p className="text-gray-400">
+                                    <strong className="text-gray-200">URI:</strong> {node.data.uri}
+                                </p>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="mt-2 space-x-3">
+                                {/* Deregister */}
+                                <button
+                                    disabled={loading}
+                                    onClick={() => deregisterNode(node.pubkey)}
+                                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700/80 disabled:opacity-50 transition-all duration-300 text-sm font-semibold uppercase tracking-wider"
+                                >
+                                    {loading ? "..." : "Deregister"}
+                                </button>
+
+                                {/* Update URI */}
+                                <button
+                                    disabled={loading}
+                                    onClick={() => {
+                                        setEditingNode(node.pubkey.toBase58());
+                                        setNewUri(node.data.uri);
+                                    }}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-500/80 disabled:opacity-50 transition-all duration-300 text-sm font-semibold uppercase tracking-wider"
+                                >
+                                    Update URI
+                                </button>
+                            </div>
+
+                            {/* Conditional Input for updating URI */}
+                            {editingNode === node.pubkey.toBase58() && (
+                                <div className="mt-3 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                                    <input
+                                        type="text"
+                                        value={newUri}
+                                        onChange={(e) => setNewUri(e.target.value)}
+                                        className="w-full px-4 py-2 bg-gray-900/70 border border-gray-600/50 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300 flex-1"
+                                    />
+                                    <div className="flex space-x-2">
+                                        <button
+                                            disabled={loading}
+                                            onClick={() => handleUpdateUri(node.pubkey)}
+                                            className="px-4 py-2 bg-green-600/80 text-white rounded-md hover:bg-green-500/80 disabled:opacity-50 transition-all duration-300 text-sm font-semibold uppercase tracking-wider"
+                                        >
+                                            {loading ? "..." : "Confirm"}
+                                        </button>
+                                        <button
+                                            disabled={loading}
+                                            onClick={() => setEditingNode(null)}
+                                            className="px-4 py-2 bg-gray-600/80 text-white rounded-md hover:bg-gray-500/80 disabled:opacity-50 transition-all duration-300 text-sm font-semibold uppercase tracking-wider"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p className="text-center text-gray-400 py-4 flex-grow flex items-center justify-center">No nodes registered yet.</p>
+            )}
+        </div>
     </div>
   );
 }

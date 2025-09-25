@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState, useCallback } from "react";
 import { PublicKey } from "@solana/web3.js";
-import { useAethernet } from "../app/hooks/useAethernet"
+import { useAethernet } from "../app/hooks/useAethernet";
 import { PROGRAM_ID } from "@/lib/constants";
 import { useWallet } from "@solana/wallet-adapter-react";
 import RegisterNodeForm from "@/components/RegisterNodeForm";
@@ -41,30 +41,53 @@ export default function Wallet() {
   }, [connected, fetchNetworkStats]);
 
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      {/* Wallet Connect Button */}
-      <WalletMultiButtonDynamic />
-
-      {/* Display NetworkStats */}
-      {networkStats ? (
-        <div className="text-xl font-semibold mb-12">
-          Total Devices Registered: {networkStats.totalNodes.toString()}
+    <div className="font-sans min-h-screen w-full p-6 md:p-12">
+      {/* Header: AETHERNET Logo and Wallet Button */}
+      <header className="flex items-center justify-between w-full max-w-7xl mx-auto">
+        <div className="text-xl md:text-2xl font-bold tracking-wider bg-gradient-to-r from-indigo-400 to-pink-500 bg-clip-text text-transparent">
+          AETHERNET
         </div>
-      ) : (
-        <div>Loading Network Stats...</div>
-      )}
+        <WalletMultiButtonDynamic />
+      </header>
 
-      {/* Node Registration Form */}
-      {connected && (
-        <RegisterNodeForm
-          onRegistrationSuccess={() => {
-            fetchNetworkStats();
-          }}
-        />
-      )}
+      {/* Main Grid Layout */}
+      <main className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-12 mt-12 md:mt-16 max-w-7xl mx-auto">
+        {/* Left Side - Stats + Register Form */}
+        {connected && (
+          <div className="flex flex-col items-center space-y-8 w-full">
+            {/* Total Devices Registered */}
+            {networkStats ? (
+              <div className="text-xl font-semibold text-center">
+                Total Devices Registered: {networkStats.totalNodes.toString()}
+              </div>
+            ) : (
+              <div className="text-center">Loading Network Stats...</div>
+            )}
 
-      {/* User's Registered Nodes */}
-      {connected && <UserNodesList onChange={fetchNetworkStats} />}
+            {/* Register Form */}
+            <RegisterNodeForm
+              onRegistrationSuccess={() => {
+                fetchNetworkStats();
+              }}
+            />
+          </div>
+        )}
+
+        {/* Right Side - User's Registered Nodes */}
+        {connected && (
+          <div className="flex items-start justify-center">
+            <UserNodesList onChange={fetchNetworkStats} />
+          </div>
+        )}
+
+        {/* Unconnected Message */}
+        {!connected && (
+            <div className="md:col-span-2 flex flex-col items-center justify-center text-center py-24">
+                <h2 className="text-3xl font-bold text-white mb-4">Welcome to Aethernet</h2>
+                <p className="text-lg text-gray-400">Please connect your wallet to manage your nodes.</p>
+            </div>
+        )}
+      </main>
     </div>
   );
 }

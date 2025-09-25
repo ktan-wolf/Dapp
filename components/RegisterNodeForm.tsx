@@ -110,50 +110,66 @@ export default function RegisterNodeForm({ onRegistrationSuccess }: RegisterNode
     `https://explorer.solana.com/tx/${signature}?cluster=custom&customUrl=http%3A%2F%2F127.0.0.1%3A8899`;
 
   return (
-    <div className="w-full max-w-md p-6 border rounded-lg space-y-4">
-      <h2 className="text-2xl font-bold text-center">Register a New Node</h2>
-      <div>
-        <label htmlFor="uri" className="block text-sm font-medium mb-1">
-          Device URI
-        </label>
-        <input
-          id="uri"
-          type="text"
-          value={uri}
-          onChange={(e) => setUri(e.target.value)}
-          placeholder="e.g., https://my-device.io/info.json"
-          className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-          disabled={isLoading}
-        />
+    // Use a relative parent to contain the glow and the card
+    <div className="relative w-full max-w-md font-['Rajdhani',_sans-serif]">
+      
+      {/* Glow effect layer: an element behind the card, blurred and colored */}
+      <div className="absolute -inset-2 bg-gradient-to-r from-pink-600 to-purple-600 rounded-3xl opacity-60 blur-3xl"></div>
+      
+      {/* Main content card with glassmorphism effect */}
+      <div className="relative w-full p-8 space-y-6 bg-black/60 backdrop-blur-sm border-2 border-pink-500/30 rounded-2xl">
+        
+        <h2 className="text-3xl font-bold text-center text-gray-100 tracking-wide">
+          Register a New Node
+        </h2>
+
+        {/* Input field */}
+        <div>
+          <label htmlFor="uri" className="block text-sm font-medium mb-2 text-gray-400 uppercase tracking-wider">
+            Device URI
+          </label>
+          <input
+            id="uri"
+            type="text"
+            value={uri}
+            onChange={(e) => setUri(e.target.value)}
+            placeholder="e.g., https://my-device.io/info.json"
+            className="w-full px-4 py-3 bg-gray-900/50 border border-gray-600/50 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300"
+            disabled={isLoading}
+          />
+        </div>
+
+        {/* Register button */}
+        <button
+          onClick={registerNode}
+          disabled={isLoading || !uri}
+          className="w-full py-3 px-4 bg-pink-700 text-white rounded-md hover:bg-pink-600 disabled:bg-gradient-to-r from-pink-600 to-purple-600 disabled:cursor-not-allowed transition-all duration-300 font-semibold uppercase tracking-wider transform hover:scale-105 hover:shadow-[0_0_25px_rgba(219,39,119,0.7)]"
+        >
+          {isLoading ? "Registering..." : "Register Node"}
+        </button>
+
+        {/* Transaction Result Display */}
+        {txSignature && (
+          <div className="text-center text-green-400 break-all p-3 bg-green-500/10 border border-green-500/20 rounded-md">
+            <p className="font-semibold">Success!</p>
+            <a
+              href={getExplorerUrl(txSignature)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-sm hover:text-green-300"
+            >
+              View Transaction on Explorer
+            </a>
+          </div>
+        )}
+
+        {/* Error Display */}
+        {error && (
+          <div className="text-center text-red-400 break-words p-3 bg-red-500/10 border border-red-500/20 rounded-md">
+            <p className="font-semibold">Error: {error}</p>
+          </div>
+        )}
       </div>
-      <button
-        onClick={registerNode}
-        disabled={isLoading || !uri}
-        className="w-full py-2 px-4 bg-purple-600 rounded-md hover:bg-purple-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-colors font-semibold"
-      >
-        {isLoading ? "Registering..." : "Register Node"}
-      </button>
-
-      {/* Transaction Result Display */}
-      {txSignature && (
-        <div className="text-center text-green-400 break-all">
-          <p>Success!</p>
-          <a
-            href={getExplorerUrl(txSignature)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-green-300"
-          >
-            View Transaction on Explorer
-          </a>
-        </div>
-      )}
-
-      {error && (
-        <div className="text-center text-red-400 break-words">
-          <p>Error: {error}</p>
-        </div>
-      )}
     </div>
   );
 }
