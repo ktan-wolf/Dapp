@@ -106,7 +106,7 @@ export default function HeroPage() {
               <a href="#" className="text-white/80 text-base font-medium hover:text-white transition-colors duration-300 transform hover:translate-y-[-2px]">
                 Token
               </a>
-              <a href="#" className="text-white/80 text-base font-medium hover:text-white transition-colors duration-300 transform hover:translate-y-[-2px]">
+              <a href="https://github.com/ktan-wolf/AetherNet-DePIN" className="text-white/80 text-base font-medium hover:text-white transition-colors duration-300 transform hover:translate-y-[-2px]">
                 Docs
               </a>
               <a href="#" className="text-white/80 text-base font-medium hover:text-white transition-colors duration-300 transform hover:translate-y-[-2px]">
@@ -128,7 +128,7 @@ export default function HeroPage() {
               {/* Network Stats - Left Side */}
               <div className="absolute left-0 top-1/2 transform -translate-y-1/2 hidden lg:block" style={{ transform: `${transform} translateY(-50%)` }}>
                 <div className="space-y-8">
-                  <Stat label="Active Nodes" value="1,428" delay={400} />
+                  <Stat label="Active Nodes" value="17" delay={400} />
                   <Stat label="Data Transmitted" value="3.2 PB" delay={600} />
                   <Stat label="Network Uptime" value="99.9%" delay={800} />
                 </div>
@@ -152,9 +152,9 @@ export default function HeroPage() {
 
                 {/* Action Buttons with improved styling */}
                 <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-16">
-                  <button className="w-2/3 sm:w-auto border border-white/30 text-white px-8 py-3 text-sm font-medium uppercase tracking-wide hover:bg-white/10 transition-all duration-300 backdrop-blur-sm rounded-md hover:border-white/50">
+                  <a href="https://github.com/ktan-wolf/AetherNet-DePIN" className="w-2/3 sm:w-auto border border-white/30 text-white px-8 py-3 text-sm font-medium uppercase tracking-wide hover:bg-white/10 transition-all duration-300 backdrop-blur-sm rounded-md hover:border-white/50">
                     Read Docs
-                  </button>
+                  </a>
                   <button onClick={() => router.push("/wallet")} className="w-2/3 sm:w-auto bg-pink-700 hover:bg-pink-800 text-white px-8 py-3 text-sm font-medium uppercase tracking-wide transition-all duration-300 transform hover:scale-105 rounded-md hover:shadow-[0_0_25px_rgba(190,24,93,0.6)]">
                     Join Wallet
                   </button>
@@ -162,9 +162,8 @@ export default function HeroPage() {
 
                 {/* Social Media Icons */}
                 <div className="flex items-center justify-center space-x-6">
-                  <a href="#" className="text-white/60 hover:text-white transition-all duration-300 transform hover:scale-110"><Github size={20} /></a>
-                  <a href="#" className="text-white/60 hover:text-white transition-all duration-300 transform hover:scale-110"><Twitter size={20} /></a>
-                  <a href="#" className="text-white/60 hover:text-white transition-all duration-300 transform hover:scale-110"><Disc size={20} /></a>
+                  <a href="https://github.com/ktan-wolf/AetherNet-DePIN" className="text-white/60 hover:text-white transition-all duration-300 transform hover:scale-110"><Github size={20} /></a>
+                  <a href="https://x.com/ktan_wolf" className="text-white/60 hover:text-white transition-all duration-300 transform hover:scale-110"><Twitter size={20} /></a>
                 </div>
               </div>
 
