@@ -93,8 +93,12 @@ export default function RegisterNodeForm({ onRegistrationSuccess }: RegisterNode
 
       console.log("Transaction successful with signature:", signature);
       setTxSignature(signature);
+
+      // NEW: Wait for the transaction to be confirmed by the network.
+      await program.provider.connection.confirmTransaction(signature, "confirmed");
+
       setUri("");
-      
+    
       // Call the callback function passed via props to notify the parent
       onRegistrationSuccess();
 
