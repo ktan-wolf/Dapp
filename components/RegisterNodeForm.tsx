@@ -7,11 +7,14 @@ import {
   Keypair,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
+  Transaction
 } from "@solana/web3.js";
 import { useWallet } from "@solana/wallet-adapter-react";
 import {
   getAssociatedTokenAddress,
   TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getAccount,
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 
@@ -42,8 +45,8 @@ export default function RegisterNodeForm({ onRegistrationSuccess }: RegisterNode
       return;
     }
     if (MINT_ADDRESS.toString() === "YOUR_TOKEN_MINT_ADDRESS_HERE") {
-        setError("Please update the MINT_ADDRESS in lib/constants.ts");
-        return;
+      setError("Please update the MINT_ADDRESS in lib/constants.ts");
+      return;
     }
 
     setIsLoading(true);
@@ -63,17 +66,38 @@ export default function RegisterNodeForm({ onRegistrationSuccess }: RegisterNode
 
       const nodeDeviceKeypair = Keypair.generate();
 
+      // --- User Token Account (ATA) ---
       const userTokenAccount = await getAssociatedTokenAddress(
         MINT_ADDRESS,
         publicKey
       );
+
+      // --- Vault Token Account ---
       const vaultTokenAccount = await getAssociatedTokenAddress(
         MINT_ADDRESS,
         vaultPda,
-        true // Allow PDA owner
+        true
       );
 
-      const signature = await program.methods
+      // ⬇️ NEW: Ensure user’s ATA exists
+      let transaction = new Transaction();
+      try {
+        await getAccount(program.provider.connection, userTokenAccount);
+        // If this succeeds, ATA exists
+      } catch (e) {
+        // If it throws, ATA doesn’t exist → add instruction to create it
+        transaction.add(
+          createAssociatedTokenAccountInstruction(
+            publicKey,           // payer
+            userTokenAccount,    // ata address
+            publicKey,           // owner of ATA
+            MINT_ADDRESS         // mint
+          )
+        );
+      }
+
+      // ⬇️ Add your program call
+      const ix = await program.methods
         .registerNode(uri)
         .accounts({
           authority: publicKey,
@@ -89,17 +113,17 @@ export default function RegisterNodeForm({ onRegistrationSuccess }: RegisterNode
           rent: SYSVAR_RENT_PUBKEY,
         })
         .signers([nodeDeviceKeypair])
-        .rpc();
+        .instruction();
 
-      console.log("Transaction successful with signature:", signature);
-      setTxSignature(signature);
+      transaction.add(ix);
 
-      // NEW: Wait for the transaction to be confirmed by the network.
-      await program.provider.connection.confirmTransaction(signature, "confirmed");
+      // Send the combined transaction (create ATA + registerNode)
+      const sig = await program.provider.sendAndConfirm(transaction, [nodeDeviceKeypair]);
+
+      console.log("Transaction successful with signature:", sig);
+      setTxSignature(sig);
 
       setUri("");
-    
-      // Call the callback function passed via props to notify the parent
       onRegistrationSuccess();
 
     } catch (err: any) {
