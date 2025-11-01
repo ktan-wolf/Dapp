@@ -1,5 +1,5 @@
 {
-  "address": "5LzZhK83HbsJPTC877hRcfCZLg1cZvqDUQgLL3BxLYb4",
+  "address": "CLetEL19atyAUd9NSBSCD9UyZWv2uqHDoCPXFsLqEJW8",
   "metadata": {
     "name": "aethernet",
     "version": "0.1.0",
@@ -9,9 +9,6 @@
   "instructions": [
     {
       "name": "deregister_node",
-      "docs": [
-        "Deregisters (removes) a node device and unstakes tokens."
-      ],
       "discriminator": [
         92,
         177,
@@ -183,9 +180,6 @@
     },
     {
       "name": "initialize_network",
-      "docs": [
-        "Initializes the network by creating the NetworkStats account."
-      ],
       "discriminator": [
         75,
         50,
@@ -237,9 +231,6 @@
     },
     {
       "name": "register_node",
-      "docs": [
-        "Registers a new node device with a URI and stakes tokens."
-      ],
       "discriminator": [
         102,
         85,
@@ -355,9 +346,6 @@
         },
         {
           "name": "vault",
-          "docs": [
-            "PDA vault, authority of vault_token_account"
-          ],
           "pda": {
             "seeds": [
               {
@@ -493,7 +481,7 @@
     {
       "code": 6000,
       "name": "UriTooLong",
-      "msg": "The provided URI is too long."
+      "msg": "the provided URI is too long"
     }
   ],
   "types": [

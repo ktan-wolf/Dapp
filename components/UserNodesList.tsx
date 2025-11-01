@@ -29,7 +29,7 @@ export default function UserNodesList({ onChange }: UserNodesListProps) {
     if (!publicKey) return;
 
     try {
-      const response = await fetch('https://indexer-o06a.onrender.com/nodes');
+      const response = await fetch('http://127.0.0.1:8081/nodes');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
